@@ -16,6 +16,10 @@ def parse(program):
         print("Problem", problem_num)
         print("Room vertices", room)
 
+# furniture shapes stored as a list of a list of tuples 
+# meaning each furniture is a list of tuples, so the whole list of furniture
+# is a list of list of tuples
+
         for i in range(0, len(all_shapes)):
             shape = all_shapes[i].split(":")
             cost = shape[0] # think about how cost will be stored in the list
