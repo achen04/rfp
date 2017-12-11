@@ -1,3 +1,5 @@
+import ast
+
 
 def parse(program):
     with open(program) as f:
@@ -13,13 +15,12 @@ def parse(program):
         print("Room vertices", room)
 
         for i in range(0, len(all_shapes)):
-            shape = all_shapes[i].split(":");
-            cost = shape[0];
-            vertices = shape[1];
-            print(i, "Cost is", cost, "for this shape", vertices)
-            # instead of printing, store into our polygon data structure
-            # there are a lot of duplicates so avoid storing duplicates unless
-            # intended
+            shape = all_shapes[i].split(":")
+            cost = shape[0] # think about how cost will be stored in the list
+            vertices = shape[1]
+            arr_tuples = ast.literal_eval("[{}]".format(vertices))
+            print(i, "Cost is", cost, "for this shape", arr_tuples)
+
 
 program = "input.txt"
 parse(program)
