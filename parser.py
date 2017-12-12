@@ -1,12 +1,13 @@
 import ast
+import math
 from shapely.geometry import Point, LineString, Polygon
+from shapely import affinity
 from pprint import pprint
 
 def parse(program):
     arr_tuples = []
     with open(program) as f:
         line = f.readline()
-
 #        for line in f:
         beg = line.split("#")[0]
         problem_num = beg.split(":")[0]
@@ -16,9 +17,9 @@ def parse(program):
         print("Problem", problem_num)
         print("Room vertices", room)
 
-# furniture shapes stored as a list of a list of tuples 
-# meaning each furniture is a list of tuples, so the whole list of furniture
-# is a list of list of tuples
+        # furniture shapes stored as a list of a list of tuples 
+        # meaning each furniture is a list of tuples, so the whole list of furniture
+        # is a list of list of tuples
         for i in range(0, len(all_shapes)):
             shape = all_shapes[i].split(":")
             cost = shape[0].split()[0] # think about how cost will be stored in the list
@@ -29,7 +30,7 @@ def parse(program):
             arr_tuples[i].append((ast.literal_eval(cost), find_area(vertices_tuple)))
             #print(i, "Cost is", cost, "for this shape", vertices)
 
-# sorting furniture list based on max area
+    # sorting furniture list based on max area
     arr_tuples = sorted(arr_tuples, key=lambda x: x[-1][1], reverse=True)
     return room, arr_tuples
 
@@ -42,42 +43,7 @@ def find_area(vertices):
     area += ((float)(vertices[-1][0])*(float)(vertices[0][1])) - ((float)(vertices[-1][0])*(float)(vertices[0][1]))
     area = area / 2
     return area
-'''
-def place_furniture(all_furniture):
-    global room 
-    f = all_furniture[0]
-    print ("room is", room)
-    print ("furniture is", f)
-    # check for intersection on all sides of the furniture
-    # number of vertices = number of sides
-    for i in range(len(f)-1): # -1 because last one is not a vertex, but (cost, area)
-        if (i + 1 < (len(f) - 1)):
-            for j in range(len(room)):
-                if (j + 1 < len(room)):
-                    if (intersect(room[j], room[j+1], f[i], f[i+1])):
-                        print("intersected", room[j], room[j+1], f[i], f[i+1])
-                    else: 
-                        print("no intersect", room[j], room[j+1], f[i], f[i+1])
-                else:
-                    if (intersect(room[j], room[0], f[i], f[i+1])):
-                        print("intersected", room[j], room[0], f[i], f[i+1])
-                    else:
-                        print("no intersect", room[j], room[0], f[i], f[i+1])
-        else:
-             for j in range(len(room)):
-                if (j + 1 < len(room)):
-                    if (intersect(room[j], room[j+1], f[-2], f[0])):
-                        print("intersected", room[j], room[j+1], f[-2], f[0])
-                    else: 
-                        print("no intersect", room[j], room[j+1], f[-2], f[0])
-                else:
-                    if (intersect(room[j], room[0], f[-2], f[0])):
-                        print("intersected", room[j], room[0], f[-2], f[0])
-                    else:
-                        print("no intersect", room[j], room[0], f[-2], f[0])
-'''         
-    
-    
+   
 
 # idenitifies orientation of the points (counterclockwise check)
 def ccw(A, B, C):
@@ -125,33 +91,65 @@ def poly_contains(p1, p2):
     return (p1.contains(p2))
     
 def place_furniture(room_o_p, room_p, furniture_p, placed_p):
-    for i in range(0, 1): # change back to len(furniture_p) later
+    for i in range(0, len(furniture_p)): # change back to len(furniture_p) later
         if (poly_contains(room_p, furniture_p[i])): 
             # change the room size by subtracting, but think of cases of the hole
             new_room_p = poly_diff(room_p, furniture_p[i])
             placed_p.append(furniture_p[i])
             if (new_room_p.area > (0.3*room_o_p.area)):
-                print("our new area is", new_room_p.area)
-                format_poly_to_tuples(placed_p)
-                print("placed furniture is", placed_p[0])
-            '''
+                #print("original area",  room_o_p.area)
+                #print("our new area is", new_room_p.area)
+                placed_p = format_poly_to_tuples(placed_p) #formatting not right
+                #print("placed furniture is", placed_p)
+                return placed_p
             else:
-                place_furniture(room_o_p, new_room_p, furniture_p)
-            '''
+                place_furniture(room_o_p, new_room_p, furniture_p, placed_p)
+            
         # else, rotate and translate until it fits/check the length of the side can still fit in room
-    print(new_room_p)
 
 def format_poly_to_tuples(poly_list):
     output = []
     for i in range(0, len(poly_list)):
-        output += ast.literal_eval("[{}]".format(poly_list[i]))
-    print(output)
+        output += list(poly_list[i].exterior.coords)
+    return output
 
+def dot(vA, vB):
+    return vA[0]*vB[0]+vA[1]*vB[1]
 
+def findAngleToRotate(lineA, lineB):
+    # Get nicer vector form
+    vA = [(lineA[0][0]-lineA[1][0]), (lineA[0][1]-lineA[1][1])]
+    vB = [(lineB[0][0]-lineB[1][0]), (lineB[0][1]-lineB[1][1])]
+    # Get dot prod
+    dot_prod = dot(vA, vB)
+    # Get magnitudes
+    magA = dot(vA, vA)**0.5
+    magB = dot(vB, vB)**0.5
+    # Get cosine value
+    cos_ = dot_prod/magA/magB
+    # Get angle in radians and then convert to degrees
+    angle = math.acos(dot_prod/magB/magA)
+    # Basically doing angle <- angle mod 360
+    ang_deg = math.degrees(angle)%360
 
+    if ang_deg-180>=0:
+        # As in if statement
+        return 360 - ang_deg
+    else:
+        return ang_deg
+
+def rotatePolgyon(p, degree):
+    return affinity.rotate(p, degree, origin='centroid')
+
+def find_longest_side(p):
+    pass
+        
 program = "input.txt"
 room, all_furniture = parse(program)
-print(room)
-print(all_furniture)
 room_p, furniture_p = poly(room, all_furniture)
 place_furniture(room_p, room_p, furniture_p, [])
+print(room_p)
+print(furniture_p[4])
+
+
+
