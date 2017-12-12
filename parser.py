@@ -16,9 +16,9 @@ def parse(program):
         print("Problem", problem_num)
         print("Room vertices", room)
 
-# furniture shapes stored as a list of a list of tuples 
-# meaning each furniture is a list of tuples, so the whole list of furniture
-# is a list of list of tuples
+        # furniture shapes stored as a list of a list of tuples
+        # meaning each furniture is a list of tuples, so the whole list of furniture
+        # is a list of list of tuples
         for i in range(0, len(all_shapes)):
             shape = all_shapes[i].split(":")
             cost = shape[0].split()[0] # think about how cost will be stored in the list
@@ -132,7 +132,7 @@ def place_furniture(room_o_p, room_p, furniture_p, placed_p):
             placed_p.append(furniture_p[i])
             if (new_room_p.area > (0.3*room_o_p.area)):
                 print("our new area is", new_room_p.area)
-                format_poly_to_tuples(placed_p)
+                #format_poly_to_tuples(placed_p)
                 print("placed furniture is", placed_p[0])
             '''
             else:
