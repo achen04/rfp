@@ -2,7 +2,6 @@ from graphics import *
 from operator import itemgetter
 from random import randint
 
-
 AXIS_X = 1000
 AXIS_Y = 700
 SCALE = 10
@@ -30,8 +29,11 @@ def main():
         for coord in furniture[:-1]:
             furniturePoints.append(Point((coord[0] - largestx) * SCALE + posx, (coord[1] - largesty) * SCALE + posy))
 
+        weight = round(furniture[-1][1]*3)
+        print(weight)
+
         display = Polygon(furniturePoints)
-        display.setFill(color_rgb(255, 255, 255))
+        display.setFill(color_rgb(255 - weight, 20, 100))
         display.draw(win)
 
     # Display Room
