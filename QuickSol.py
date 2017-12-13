@@ -54,7 +54,7 @@ def checkIntersect(room, furniture):
 
 
 # GET INPUTS
-room, furniture = parse("input.txt", 12)
+room, furniture = parse("input.txt", 10)
 
 
 # Find largest x,y for room
