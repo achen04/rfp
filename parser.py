@@ -3,6 +3,18 @@ from shapely.geometry import Point, LineString, Polygon
 from pprint import pprint
 
 def parse(program, question):
+    def find_area(vertices):
+        area = 0.0
+        for i in range(len(vertices)):
+            if (i + 1 < len(vertices)):
+                # all values casted to float
+                area += ((float)(vertices[i][0]) * (float)(vertices[i + 1][1])) - (
+                        (float)(vertices[i][1]) * (float)(vertices[i + 1][0]))
+        area += ((float)(vertices[-1][0]) * (float)(vertices[0][1])) - (
+                (float)(vertices[-1][0]) * (float)(vertices[0][1]))
+        area = area / 2
+        return area
+
     arr_tuples = []
     with open(program) as f:
         line = f.readline()
@@ -34,15 +46,7 @@ def parse(program, question):
     arr_tuples = sorted(arr_tuples, key=lambda x: x[-1][1], reverse=True)
     return room, arr_tuples
 
-def find_area(vertices):
-    area = 0.0
-    for i in range(len(vertices)):
-        if (i + 1 < len(vertices)):
-            # all values casted to float
-            area += ((float)(vertices[i][0])*(float)(vertices[i+1][1])) - ((float)(vertices[i][1])*(float)(vertices[i+1][0]))
-    area += ((float)(vertices[-1][0])*(float)(vertices[0][1])) - ((float)(vertices[-1][0])*(float)(vertices[0][1]))
-    area = area / 2
-    return area
+
 '''
 def place_furniture(all_furniture):
     global room 
