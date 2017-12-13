@@ -7,27 +7,28 @@ def parse(program):
     with open(program) as f:
         line = f.readline()
 
-#        for line in f:
-        beg = line.split("#")[0]
-        problem_num = beg.split(":")[0]
-        room = ast.literal_eval("[{}]".format(beg.split(":")[1]))
-        all_shapes = line.split("#")[1].split(";")
-        
-        print("Problem", problem_num)
-        print("Room vertices", room)
+        for i, line in enumerate(f):
+            if i == 3:
+                beg = line.split("#")[0]
+                problem_num = beg.split(":")[0]
+                room = ast.literal_eval("[{}]".format(beg.split(":")[1]))
+                all_shapes = line.split("#")[1].split(";")
 
-        # furniture shapes stored as a list of a list of tuples
-        # meaning each furniture is a list of tuples, so the whole list of furniture
-        # is a list of list of tuples
-        for i in range(0, len(all_shapes)):
-            shape = all_shapes[i].split(":")
-            cost = shape[0].split()[0] # think about how cost will be stored in the list
-            vertices = shape[1]
-            vertices_tuple = ast.literal_eval("[{}]".format(vertices))
-            arr_tuples += [vertices_tuple]
-            # store the cost and area in the last tuple
-            arr_tuples[i].append((ast.literal_eval(cost), find_area(vertices_tuple)))
-            #print(i, "Cost is", cost, "for this shape", vertices)
+                print("Problem", problem_num)
+                print("Room vertices", room)
+
+                # furniture shapes stored as a list of a list of tuples
+                # meaning each furniture is a list of tuples, so the whole list of furniture
+                # is a list of list of tuples
+                for i in range(0, len(all_shapes)):
+                    shape = all_shapes[i].split(":")
+                    cost = shape[0].split()[0] # think about how cost will be stored in the list
+                    vertices = shape[1]
+                    vertices_tuple = ast.literal_eval("[{}]".format(vertices))
+                    arr_tuples += [vertices_tuple]
+                    # store the cost and area in the last tuple
+                    arr_tuples[i].append((ast.literal_eval(cost), find_area(vertices_tuple)))
+                    #print(i, "Cost is", cost, "for this shape", vertices)
 
 # sorting furniture list based on max area
     arr_tuples = sorted(arr_tuples, key=lambda x: x[-1][1], reverse=True)
@@ -148,10 +149,9 @@ def format_poly_to_tuples(poly_list):
     print(output)
 
 
-
 program = "input.txt"
 room, all_furniture = parse(program)
 print(room)
 print(all_furniture)
-room_p, furniture_p = poly(room, all_furniture)
-place_furniture(room_p, room_p, furniture_p, [])
+
+
