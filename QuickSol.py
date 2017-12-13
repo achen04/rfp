@@ -137,11 +137,9 @@ print("Largest Room: ", largestx, largesty)
 for index, itemNormal in enumerate(furniture):
     item = Polygon(itemNormal[:-1])
 
-#item = furniture[0]
-
     itemAddAttempt = 0
 
-    while itemAddAttempt < 40:
+    while itemAddAttempt < 100:
         itemAddAttempt += 1
 
         # Randomly translate furniture in max room range
@@ -150,8 +148,8 @@ for index, itemNormal in enumerate(furniture):
 
         print("Largest: ", largestFurnx, largestFurny)
 
-        translatex = round(uniform(0, largestx),5)
-        translatey = round(uniform(0, largesty),5)
+        translatex = round(uniform(0, largestx), 8)
+        translatey = round(uniform(0, largesty), 8)
 
         print("Translation: ", translatex, translatey)
 
@@ -177,24 +175,26 @@ for index, itemNormal in enumerate(furniture):
 
     # Check if area over 30%
     if currentArea > reqArea:
-        print("Done:\nCurrent Area: ", currentArea, " Required Area: ", reqArea, "Total Shapes: ", len(currentFurniture), "Total Shapes Attempted: ", index)
+        print("###### Done:\nCurrent Area: ", currentArea, " Required Area: ", reqArea, "Total Shapes: ", len(currentFurniture), "Total Shapes Attempted: ", index)
 
         currentFurnitureNormal = []
 
         for i in currentFurniture:
             currentFurnitureNormal.append(list(zip(*i.exterior.coords.xy)))
 
-        print (currentFurnitureNormal)
+        print(currentFurnitureNormal)
 
-        for i in currentFurnitureNormal:
-            for j in i:
-                print("(" + str(j[0]) + ", " + str(j[1]) + ")," , end="")
+        for index, i in enumerate(currentFurnitureNormal):
+            for index2, j in enumerate(i):
+                if index2 == len(i) - 1:
+                    print("(" + str(j[0]) + "," + str(j[1]) + ")" , end="")
+                else:
+                    print("(" + str(j[0]) + "," + str(j[1]) + "), " , end="")
 
-            print(";", end=" ")
+            if index != len(currentFurnitureNormal)-1:
+                print(";", end=" ")
 
         break
 
 
-
-
-
+print("\n\nEnd")

@@ -2,13 +2,13 @@ import ast
 from shapely.geometry import Point, LineString, Polygon
 from pprint import pprint
 
-def parse(program):
+def parse(program, question):
     arr_tuples = []
     with open(program) as f:
         line = f.readline()
 
         for i, line in enumerate(f):
-            if i == 3:
+            if i == question - 2:
                 beg = line.split("#")[0]
                 problem_num = beg.split(":")[0]
                 room = ast.literal_eval("[{}]".format(beg.split(":")[1]))
@@ -150,8 +150,8 @@ def format_poly_to_tuples(poly_list):
 
 
 program = "input.txt"
-room, all_furniture = parse(program)
-print(room)
-print(all_furniture)
+room, all_furniture = parse(program, 5)
+print("Room: ", room)
+print("Furniture: ", all_furniture)
 
 
