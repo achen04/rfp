@@ -78,7 +78,6 @@ def place_furniture(all_furniture):
                         print("no intersect", room[j], room[0], f[-2], f[0])
 '''         
     
-    
 
 # idenitifies orientation of the points (counterclockwise check)
 def ccw(A, B, C):
@@ -150,7 +149,7 @@ def format_poly_to_tuples(poly_list):
 
 
 program = "input.txt"
-room, all_furniture = parse(program, 5)
+room, all_furniture = parse(program, 13)
 print("Room: ", room)
 print("Furniture: ", all_furniture)
 
