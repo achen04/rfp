@@ -62,6 +62,7 @@ largestx = max(room, key=itemgetter(1))[0]
 largesty = max(room, key=itemgetter(1))[1]
 smallestx = min(room, key=itemgetter(1))[0]
 smallesty = min(room, key=itemgetter(1))[1]
+
 room = Polygon(room)
 reqArea = room.area * 0.3
 currentArea = 0
@@ -75,7 +76,7 @@ for index, itemNormal in enumerate(furniture):
 
     itemAddAttempt = 0
 
-    while itemAddAttempt < 50:
+    while itemAddAttempt < 200:
         itemAddAttempt += 1
 
         item = Polygon(itemNormal[:-1])  # Convert to polygon
@@ -85,8 +86,8 @@ for index, itemNormal in enumerate(furniture):
         largestFurnx = item.bounds[2]
         largestFurny = item.bounds[3]
 
-        translatex = uniform(smallestx, largestx)
-        translatey = uniform(smallesty, largesty)
+        translatex = uniform(smallestx*2, largestx*2)
+        translatey = uniform(smallesty*2, largesty*2)
 
         print("Translation by: ", translatex, translatey)
 
@@ -96,7 +97,7 @@ for index, itemNormal in enumerate(furniture):
         angle = 0
         while angle <= 360:
 
-            item = rotate(item, 22.5)
+            item = rotate(item, 90)
             print("Rotated: ", item)
 
             # Check furniture fits inside room
@@ -121,6 +122,7 @@ for index, itemNormal in enumerate(furniture):
 
             else:
                 print("ITEM NOT IN SHAPE")
+                angle += 360
             angle += 90
 
         # Check if area over 30%
@@ -150,4 +152,4 @@ print("\n\nEnd")
 for i in currentFurniture:
     currentFurnitureNormal.append(list(zip(*i.exterior.coords.xy))[:-1])
 
-print("Items: ", currentFurnitureNormal)
+print("Failed Items:\n ", currentFurnitureNormal)
