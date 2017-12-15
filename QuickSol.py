@@ -54,7 +54,7 @@ def checkIntersect(room, furniture):
 
 
 # GET INPUTS
-room, furniture = parse("input.txt", 8)
+room, furniture = parse("input.txt", 14)
 shuffle(furniture)
 
 # Find largest x,y for room
@@ -63,7 +63,21 @@ largesty = max(room, key=itemgetter(1))[1]
 smallestx = min(room, key=itemgetter(1))[0]
 smallesty = min(room, key=itemgetter(1))[1]
 
+
+print(largestx, largesty, smallestx, smallesty)
+
+
 room = Polygon(room)
+
+largestx2 = room.bounds[2]
+largesty2 = room.bounds[3]
+smallestx2 = room.bounds[0]
+smallesty2 = room.bounds[1]
+
+print(largestx2, largesty2, smallestx2, smallesty2)
+
+
+
 reqArea = room.area * 0.3
 currentArea = 0
 currentFurniture = []    # Array of polygons already in solution
@@ -76,18 +90,14 @@ for index, itemNormal in enumerate(furniture):
 
     itemAddAttempt = 0
 
-    while itemAddAttempt < 200:
+    while itemAddAttempt < 750:
         itemAddAttempt += 1
 
         item = Polygon(itemNormal[:-1])  # Convert to polygon
         print("NEW FURNITURE", item)
 
-        # Randomly translate furniture in max room range
-        largestFurnx = item.bounds[2]
-        largestFurny = item.bounds[3]
-
-        translatex = uniform(smallestx*2, largestx*2)
-        translatey = uniform(smallesty*2, largesty*2)
+        translatex = uniform(smallestx2, abs(largestx2*2))
+        translatey = uniform(smallesty2*2, largesty2*2)
 
         print("Translation by: ", translatex, translatey)
 
@@ -97,7 +107,7 @@ for index, itemNormal in enumerate(furniture):
         angle = 0
         while angle <= 360:
 
-            item = rotate(item, 90)
+            item = rotate(item, 20)
             print("Rotated: ", item)
 
             # Check furniture fits inside room
@@ -116,14 +126,14 @@ for index, itemNormal in enumerate(furniture):
                 if intersect == False:
                     currentFurniture.append(item)
                     currentArea += item.area
-                    print("Added furniture, Area: ", item.area)
+                    print("+++++++++++++++++++++++Added furniture++++++++++++++++++++++++++++")
                     itemAddAttempt += 1000
                     break
 
             else:
                 print("ITEM NOT IN SHAPE")
                 angle += 360
-            angle += 90
+            angle += 20
 
         # Check if area over 30%
         if currentArea > reqArea:
