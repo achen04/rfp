@@ -4,6 +4,7 @@ from shapely.affinity import *
 import ast
 from random import randint, uniform, shuffle
 
+
 def parse(program, question):
     def find_area(vertices):
         area = 0.0
@@ -54,19 +55,13 @@ def checkIntersect(room, furniture):
 
 
 # GET INPUTS
-room, furniture = parse("input.txt", 14)
-shuffle(furniture)
+room, furniture = parse("input.txt", 5)
+print(furniture)
+furniture.sort(key=lambda x: x[-1][-1], reverse=True)
+print(furniture)
+
 
 # Find largest x,y for room
-largestx = max(room, key=itemgetter(1))[0]
-largesty = max(room, key=itemgetter(1))[1]
-smallestx = min(room, key=itemgetter(1))[0]
-smallesty = min(room, key=itemgetter(1))[1]
-
-
-print(largestx, largesty, smallestx, smallesty)
-
-
 room = Polygon(room)
 
 largestx2 = room.bounds[2]
@@ -76,10 +71,8 @@ smallesty2 = room.bounds[1]
 
 print(largestx2, largesty2, smallestx2, smallesty2)
 
-
-
 reqArea = room.area * 0.3
-currentArea = 0
+currentArea, weight = 0, 0
 currentFurniture = []    # Array of polygons already in solution
 currentFurnitureNormal = []
 
@@ -107,7 +100,7 @@ for index, itemNormal in enumerate(furniture):
         angle = 0
         while angle <= 360:
 
-            item = rotate(item, 20)
+            item = rotate(item, 15)
             print("Rotated: ", item)
 
             # Check furniture fits inside room
@@ -125,6 +118,7 @@ for index, itemNormal in enumerate(furniture):
                 # Add furniture to currentFurniture
                 if intersect == False:
                     currentFurniture.append(item)
+                    weight += itemNormal[-1][0]*itemNormal[-1][1]
                     currentArea += item.area
                     print("+++++++++++++++++++++++Added furniture++++++++++++++++++++++++++++")
                     itemAddAttempt += 1000
@@ -133,29 +127,28 @@ for index, itemNormal in enumerate(furniture):
             else:
                 print("ITEM NOT IN SHAPE")
                 angle += 360
-            angle += 20
+            angle += 15
 
         # Check if area over 30%
         if currentArea > reqArea:
-            print("###### Done:\nCurrent Area: ", currentArea, " Required Area: ", reqArea, "Total Shapes: ", len(currentFurniture), "Total Shapes Attempted: ", index)
+            print("###### Done:\nCurrent Area: ", currentArea, "Area %: ", currentArea*100/room.area, "Weight: ", weight,
+                   "Total Shapes: ", len(currentFurniture), "Total Shapes Attempted: ", index+1)
 
-            for i in currentFurniture:
-                currentFurnitureNormal.append(list(zip(*i.exterior.coords.xy))[:-1])
 
-            print(currentFurnitureNormal)
+for i in currentFurniture:
+    currentFurnitureNormal.append(list(zip(*i.exterior.coords.xy))[:-1])
 
-            for index, i in enumerate(currentFurnitureNormal):
-                for index2, j in enumerate(i):
-                    if index2 == len(i) - 1:
-                        print("(" + str(j[0]) + ", " + str(j[1]) + ")" , end="")
-                    else:
-                        print("(" + str(j[0]) + ", " + str(j[1]) + "), " , end="")
+print(currentFurnitureNormal)
 
-                if index != len(currentFurnitureNormal)-1:
-                    print(";", end=" ")
+for index, i in enumerate(currentFurnitureNormal):
+    for index2, j in enumerate(i):
+        if index2 == len(i) - 1:
+            print("(" + str(j[0]) + ", " + str(j[1]) + ")" , end="")
+        else:
+            print("(" + str(j[0]) + ", " + str(j[1]) + "), " , end="")
 
-            quit()
-
+    if index != len(currentFurnitureNormal)-1:
+        print(";", end=" ")
 
 print("\n\nEnd")
 
